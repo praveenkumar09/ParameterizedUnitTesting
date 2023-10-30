@@ -1,5 +1,6 @@
 package org.praveen.test;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,16 +12,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
 
-    public static Stream<Arguments> getArgumentProvider() {
-        return Stream.of(
-                Arguments.of(6,5,11),
-                Arguments.of(6,1,7)
-        );
+    private App app;
+
+    @BeforeEach
+    void appInit(){
+        app = new App();
     }
 
     @Test
     void addTwoNumbers_fiveAndSix_returnsEleven() {
-        App app = new App();
         int a = 5;
         int b = 6;
         assertEquals(11,app.addTwoNumbers(a,b));
@@ -28,8 +28,7 @@ class AppTest {
 
     @ParameterizedTest
     @ValueSource(ints = {10,20,20,40,50})
-    void addTwoNumbers_TenAndDynamicNumber_returnDynamicNumberPlusTen(int number){
-        App app = new App();
+    void addTwoNumbers_SixAndDynamicNumber_returnDynamicNumberPlusSix(int number){
         int b =6;
         assertEquals(number +6, app.addTwoNumbers(number, b));
     }
@@ -42,21 +41,18 @@ class AppTest {
             "6, 1, 7",
     })
     void addTwoNumbers_bothDynamicNumber_returnAdditionOfDynamicNumbers(int a,int b,int expectedResult){
-        App app = new App();
         assertEquals(expectedResult, app.addTwoNumbers(a, b));
     }
 
     @ParameterizedTest(name = "[{index}] {0} + {1} = {2}")
     @MethodSource("getArgumentProvider")
     void addTwoNumbers_bothDynamicNumberViaArgumentProvider_returnAdditionOfDynamicNumbersViaArgument(int a,int b,int expectedResult){
-        App app = new App();
         assertEquals(expectedResult, app.addTwoNumbers(a, b));
     }
 
     @ParameterizedTest
     @EnumSource(GenerateNumber.class)
     void addTwoNumbers_SixAndDynamicNumberViaEnum_returnDynamicNumberPlusSix(GenerateNumber number){
-        App app = new App();
         int b =6;
         int expectedNumber = switch (number){
             case ONE -> 7;
@@ -68,9 +64,15 @@ class AppTest {
 
     @RepeatedTest(10)
     void addTwoNumbers_checkException(){
-        App app = new App();
         int a = 123233434;
         int b = 123233434;
         assertThrows(RuntimeException.class,() -> app.addTwoNumbers(a,b));
+    }
+
+    public static Stream<Arguments> getArgumentProvider() {
+        return Stream.of(
+                Arguments.of(6,5,11),
+                Arguments.of(6,1,7)
+        );
     }
 }
